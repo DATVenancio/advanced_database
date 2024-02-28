@@ -1,5 +1,7 @@
 from pymongo import MongoClient
+import time
 
+"""
 # Se connecter à MongoDB
 client = MongoClient('localhost', 27017)
 db = client['advanced_database']  
@@ -7,8 +9,10 @@ db = client['advanced_database']
 persons_collection = db['persons']
 characters_collection = db['characters']
 movies_collection = db['movies']
+genres_collection = db['genres']
 
 # q01 - Dans quels films a joué Jean Reno ?
+start_time= time.time()
 mids=[]
 movies=[]
 
@@ -18,21 +22,31 @@ for character in  characters:
     mids.append(character["mid"])
 for mid in mids:
     movies.append(movies_collection.find_one({"mid":mid})["primaryTitle"])
+end_time=time.time()
 
 print("QUESTION 01 :")
 for movie in movies:
     print(movie)
+print("Time: ", end_time-start_time)
 
-""""
+"""
+# Se connecter à MongoDB
+client = MongoClient('localhost', 27017)
+db = client['advanced_database']  
+#setup
+persons_collection = db['persons']
+characters_collection = db['characters']
+movies_collection = db['movies']
+genres_collection = db['genres']
+
+
 # q01 - Dans quels films a joué Jean Reno ?
 # Étape 1 : Extraire le pid de Jean Reno de la table persons
-persons_collection = db['persons']
 jean_reno = persons_collection.find_one({"primaryName": "Jean Reno"}, {"pid": 1})
 jean_reno_pid = jean_reno['pid']
 print(jean_reno_pid)
 
 # Étape 2 : Trouver les mids correspondants dans la table characters
-characters_collection = db['characters']
 jean_reno_characters = characters_collection.find({"pid": jean_reno_pid}, {"mid": 1})
 jean_reno_mids = [character['mid'] for character in jean_reno_characters]
 print(jean_reno_mids)
@@ -48,8 +62,9 @@ for film in jean_reno_films:
 
 
 
-
 #q02 - Quels sont les trois meilleurs films d’horreur des années 2000 au sens de la note moyenne par les utilisateurs ?
+
+start_time=time.time()
 
 # Étape 1 : Récupérer les mids des films d'horreur
 genres_collection = db['genres']
@@ -67,10 +82,17 @@ ratings_collection = db['ratings']
 top_horror_movies = ratings_collection.find({"mid": {"$in": horror_mids}}).sort("averageRating", -1).limit(3)
 
 # Afficher les titres des trois meilleurs films
-print("Les trois meilleurs films d'horreur des années 2000 selon la note moyenne des utilisateurs :")
+movie_data=[]
 for movie in top_horror_movies:
-    movie_data = movies_collection.find_one({"mid": movie['mid']})
-    print(movie_data['primaryTitle'])
+    movie_data.append(movies_collection.find_one({"mid": movie['mid']})["primaryTitle"])
+end_time=time.time()
+
+print("Les trois meilleurs films d'horreur des années 2000 selon la note moyenne des utilisateurs :")
+for movie in movie_data:
+    print(movie)
+
+print("TIME: ",end_time-start_time)
+
 
 
 
@@ -125,6 +147,3 @@ print("Les acteurs ayant joué plus d'un rôle dans un film :")
 for actor_pid in actors_with_multiple_roles_pids:
     actor_info = persons_collection.find_one({"pid": actor_pid}, {"primaryName": 1})
     print(actor_info['primaryName'])
-
-    
-"""

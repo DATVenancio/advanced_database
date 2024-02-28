@@ -1,9 +1,11 @@
 import sqlite3
+import time
 db = sqlite3.connect('database.db')
 db_cursor = db.cursor()
 
 #q01 - Dans quels films a joué Jean Reno ?
-print("QUESTION 01 :")
+
+start_time=time.time()
 name="Jean Reno"
 query="""
 SELECT DISTINCT primaryTitle FROM movies
@@ -13,23 +15,34 @@ WHERE primaryName = 'Jean Reno'
 """
 db_cursor.execute(query)
 result = db_cursor.fetchall()
+end_time=time.time()
+print("QUESTION 01 :")
 for response in result:
     print(response[0])
+
+print("Time: ", end_time-start_time)
 print("_________________________")
+
+
+
+
 
 #q02 - Quels sont les trois meilleurs films d’horreur des années 2000 au sens de la note moyenne par les utilisateurs ?
 print("QUESTION 02 :")
+start_time=time.time()
 query="""
 SELECT primaryTitle FROM movies
 JOIN ratings ON movies.mid = ratings.mid
 JOIN genres on movies.mid = genres.mid
-WHERE  genre == 'Horror'AND startYear == 2000
+WHERE  genre == 'Horror'AND startYear  BETWEEN 2000 AND 2009
 ORDER BY  averageRating DESC LIMIT 3
 """
 db_cursor.execute(query)
 result = db_cursor.fetchall()
+end_time=time.time()
 for response in result:
     print(response[0])
+print("TIME: ",end_time-start_time)
 
 print("_________________________")
 
@@ -38,8 +51,8 @@ print("QUESTION 03 :")
 
 query="""
 SELECT DISTINCT primaryName FROM persons
-JOIN principals ON principals.pid = persons.pid
-JOIN titles ON titles.mid = principals.mid
+JOIN writers ON writers.pid = persons.pid
+JOIN titles ON titles.mid = writers.mid
 WHERE titles.mid NOT in(
     SELECT mid
     FROM titles
