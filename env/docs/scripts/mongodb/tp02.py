@@ -96,6 +96,9 @@ print("TIME: ",end_time-start_time)
 
 
 
+
+
+""""
 #q03 - Quels sont les scénaristes qui ont écrit des films jamais diffusés en Espagne (région ES dans la table titles) ?
 
 # Étape 1 : Récupérer les mid des films jamais diffusés en Espagne
@@ -122,7 +125,6 @@ for writer in writers_names:
     print(writer['primaryName'])
 
 
-
 #q04 - Quels acteurs ont joué le plus de rôles différents dans un même film ?
 
 
@@ -147,3 +149,6 @@ print("Les acteurs ayant joué plus d'un rôle dans un film :")
 for actor_pid in actors_with_multiple_roles_pids:
     actor_info = persons_collection.find_one({"pid": actor_pid}, {"primaryName": 1})
     print(actor_info['primaryName'])
+
+"""
+
