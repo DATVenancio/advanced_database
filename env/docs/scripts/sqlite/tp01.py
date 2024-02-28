@@ -22,6 +22,8 @@ print("QUESTION 02 :")
 query="""
 SELECT primaryTitle FROM movies
 JOIN ratings ON movies.mid = ratings.mid
+JOIN genres on movies.mid = genres.mid
+WHERE  genre == 'Horror'AND startYear == 2000
 ORDER BY  averageRating DESC LIMIT 3
 """
 db_cursor.execute(query)
@@ -56,24 +58,14 @@ print("_________________________")
 print("QUESTION 04 :")
 
 query="""
-SELECT DISTINCT mid
-FROM titles
-WHERE mid NOT IN (
-    SELECT mid
-    FROM titles
-    WHERE region = 'ES'
-);
+SELECT persons.primaryName, COUNT(DISTINCT characters.name) AS amount_roles
+FROM characters
+JOIN persons ON characters.pid = persons.pid
+GROUP BY characters.pid, characters.mid
+ORDER BY amount_roles DESC
+LIMIT 3;
 """
-query="""
-SELECT DISTINCT primaryName FROM persons
-JOIN principals ON principals.pid = persons.pid
-JOIN titles ON titles.mid = principals.mid
-WHERE titles.mid NOT in(
-    SELECT mid
-    FROM titles
-    WHERE region = 'ES'
-)
-"""
+
 db_cursor.execute(query)
 result = db_cursor.fetchall()
 for response in result:
